@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GUOZAMI — Taiwanese Flavour · Everyday Warmth</title>
   <meta name="description" content="GUOZAMI — Authentic Taiwanese cuisine. Braised pork rice, beef noodle soup, bubble tea.">
+  <link rel="icon" type="image/webp" href="image/Guozami Icon_Full color.webp">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -161,11 +162,14 @@
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-12">
   <div class="max-w-7xl mx-auto flex items-center justify-between py-5">
 
-    <a href="#hero" class="flex flex-col leading-none">
-      <span class="text-meat font-bold" style="font-size:1.15rem;letter-spacing:.18em;">GUOZAMI</span>
-      <span class="text-meat opacity-40 font-light" style="font-size:.55rem;letter-spacing:.28em;margin-top:2px;">
-        <span lang="en">TAIWANESE CUISINE</span>
-        <span lang="zh">台式料理</span>
+    <a href="#hero" class="flex items-center gap-3 leading-none">
+      <img src="image/Guozami Icon_Full color.webp" alt="GUOZAMI" style="height:42px;width:auto;display:block;">
+      <span class="flex flex-col leading-none">
+        <span class="text-meat font-bold" style="font-size:1.15rem;letter-spacing:.18em;">GUOZAMI</span>
+        <span class="text-meat opacity-40 font-light" style="font-size:.55rem;letter-spacing:.28em;margin-top:2px;">
+          <span lang="en">TAIWANESE CUISINE</span>
+          <span lang="zh">台式料理</span>
+        </span>
       </span>
     </a>
 
@@ -174,9 +178,6 @@
       <a href="#menu"        class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">MENU</span><span lang="zh">菜單</span></a>
       <a href="#location"    class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">LOCATION</span><span lang="zh">位置</span></a>
       <a href="#delivery"    class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">ORDER</span><span lang="zh">外賣</span></a>
-      <a href="#reservation" class="btn-fill bg-eggyork text-white text-xs px-7 py-3 font-medium" style="letter-spacing:.18em;">
-        <span class="btn-label"><span lang="en">RESERVE</span><span lang="zh">訂位</span></span>
-      </a>
 
       <!-- Language switcher -->
       <div class="flex items-center gap-2 border-l border-meat/15 pl-5">
@@ -199,9 +200,6 @@
       <a href="#menu"        class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">MENU</span><span lang="zh">菜單</span></a>
       <a href="#location"    class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">LOCATION</span><span lang="zh">位置</span></a>
       <a href="#delivery"    class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">ORDER</span><span lang="zh">外賣</span></a>
-      <a href="#reservation" class="btn-fill bg-eggyork text-white text-xs px-6 py-3 text-center font-medium" style="letter-spacing:.18em;">
-        <span class="btn-label"><span lang="en">RESERVE A TABLE</span><span lang="zh">立即訂位</span></span>
-      </a>
       <!-- Mobile lang switcher -->
       <div class="flex items-center gap-3 pt-1 border-t border-meat/10">
         <span class="text-meat/40 text-xs" style="letter-spacing:.1em;">LANGUAGE</span>
@@ -247,9 +245,6 @@
       <div class="flex flex-wrap gap-4">
         <a href="#menu" class="btn-fill bg-eggyork text-white text-xs px-9 py-4 font-medium" style="letter-spacing:.2em;">
           <span class="btn-label"><span lang="en">VIEW MENU</span><span lang="zh">查看菜單</span></span>
-        </a>
-        <a href="#reservation" class="btn-outline text-white text-xs px-9 py-4 font-medium" style="letter-spacing:.2em;">
-          <span lang="en">RESERVE A TABLE</span><span lang="zh">立即訂位</span>
         </a>
         <a href="#delivery" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-300 text-xs py-4" style="letter-spacing:.15em;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -919,30 +914,6 @@
 </section>
 
 
-<!-- ═══════ RESERVATION ═══════ -->
-<section id="reservation" class="py-20 md:py-28 px-6 md:px-12" style="background-color:var(--meat);">
-  <div class="max-w-7xl mx-auto text-center fade-in">
-    <p class="sec-label mb-5" style="color:rgba(255,255,255,.35);">
-      <span lang="en">RESERVATION</span><span lang="zh">訂位</span>
-    </p>
-    <h2 class="text-white font-bold mb-5" style="font-size:clamp(1.8rem,4vw,3rem);letter-spacing:.04em;">
-      <span lang="en">Reserve Your Table</span>
-      <span lang="zh">預約你的台灣饗宴</span>
-    </h2>
-    <p class="text-white/55 text-sm leading-relaxed mb-10 max-w-sm mx-auto">
-      <span lang="en">Let us prepare the perfect seat for you to experience a full Taiwanese home-cooking journey.</span>
-      <span lang="zh">讓我們為你準備最好的位置，享受一頓完整的台灣家庭料理體驗。</span>
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="tel:+85212345678" class="btn-fill bg-eggyork text-white text-xs px-10 py-4 font-medium" style="letter-spacing:.2em;">
-        <span class="btn-label"><span lang="en">CALL TO RESERVE</span><span lang="zh">電話訂位</span></span>
-      </a>
-      <a href="#" class="btn-outline text-white text-xs px-10 py-4 font-medium" style="letter-spacing:.2em;border-color:rgba(255,255,255,.35);">
-        <span lang="en">BOOK ONLINE</span><span lang="zh">線上訂位</span>
-      </a>
-    </div>
-  </div>
-</section>
 
 
 <!-- ═══════ LOCATION ═══════ -->
@@ -962,21 +933,22 @@
           <p class="sec-label mb-3"><span lang="en">ADDRESS</span><span lang="zh">地址</span></p>
           <p class="text-meat font-medium mb-1 text-sm">GUOZAMI <span lang="en">Taiwanese Cuisine</span><span lang="zh">台式料理</span></p>
           <p lang="en" class="text-meat/60 text-sm leading-loose">
-            Shop A, 2/F, Taiwan Food Building<br>
-            123 Hennessy Road, Causeway Bay<br>
-            Hong Kong<br>
-            <span class="text-meat/40 text-xs">(Near Causeway Bay MTR, Exit A)</span>
+            356 Kensington Rd NW<br>
+            Calgary, AB T2N 3R4<br>
+            Canada<br>
+            <span class="text-meat/40 text-xs">(Kensington Village)</span>
           </p>
           <p lang="zh" class="text-meat/60 text-sm leading-loose">
-            香港銅鑼灣軒尼詩道 123 號<br>
-            台灣美食大樓 2 樓 A 號舖<br>
-            <span class="text-meat/40 text-xs">（近銅鑼灣地鐵站 A 出口）</span>
+            356 Kensington Rd NW<br>
+            Calgary, AB T2N 3R4<br>
+            加拿大<br>
+            <span class="text-meat/40 text-xs">（Kensington Village）</span>
           </p>
         </div>
 
         <div class="mb-9">
           <p class="sec-label mb-3"><span lang="en">CONTACT</span><span lang="zh">聯絡</span></p>
-          <p class="text-meat text-sm">+852 1234 5678</p>
+          <p class="text-meat text-sm">+1 1234567890</p>
           <p class="text-meat/60 text-sm">info@guozami.com</p>
         </div>
 
@@ -1017,8 +989,8 @@
             </div>
             <p class="text-meat font-medium text-sm" style="letter-spacing:.08em;">GUOZAMI</p>
             <p class="text-meat/50 text-xs text-center px-8">
-              <span lang="en">123 Hennessy Road, Causeway Bay</span>
-              <span lang="zh">銅鑼灣軒尼詩道 123 號</span><br>
+              <span lang="en">356 Kensington Rd NW, Calgary</span>
+              <span lang="zh">356 Kensington Rd NW, Calgary</span><br>
               <span class="text-eggyork/70 text-xs" style="letter-spacing:.08em;">
                 <span lang="en">REPLACE WITH GOOGLE MAPS EMBED</span>
                 <span lang="zh">請替換為 Google Maps 嵌入</span>
@@ -1121,7 +1093,6 @@
           <a href="#signature"   class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Signature Dishes</span><span lang="zh">招牌菜</span></a>
           <a href="#location"    class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Location</span><span lang="zh">位置</span></a>
           <a href="#delivery"    class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Order Delivery</span><span lang="zh">外賣訂購</span></a>
-          <a href="#reservation" class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Reserve a Table</span><span lang="zh">訂位</span></a>
         </div>
       </div>
 
@@ -1129,7 +1100,7 @@
         <p class="text-white/30 text-xs font-medium mb-6" style="letter-spacing:.28em;">
           <span lang="en">CONNECT</span><span lang="zh">聯絡我們</span>
         </p>
-        <p class="text-white/50 text-sm mb-1">+852 1234 5678</p>
+        <p class="text-white/50 text-sm mb-1">+1 1234567890</p>
         <p class="text-white/50 text-sm mb-8">info@guozami.com</p>
 
         <p class="text-white/30 text-xs font-medium mb-4" style="letter-spacing:.28em;">
