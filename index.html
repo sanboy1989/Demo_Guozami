@@ -4,1008 +4,793 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GUOZAMI — Taiwanese Flavour · Everyday Warmth</title>
-  <meta name="description" content="GUOZAMI — Authentic Taiwanese cuisine. Braised pork rice, beef noodle soup, bubble tea.">
+  <meta name="description" content="GUOZAMI — Authentic Taiwanese cuisine in Calgary. Braised pork rice, beef noodle soup, and more.">
   <link rel="icon" type="image/webp" href="image/Guozami Icon_Full color.webp">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { cream: '#F8F1E9', eggyork: '#E6445E', meat: '#512508' },
-          fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'] },
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 
   <style>
-    :root { --cream:#F8F1E9; --eggyork:#E6445E; --meat:#512508; }
-    *, *::before, *::after { box-sizing: border-box; }
+    /* ── Root ── */
+    :root {
+      --cream:   #F5EFE6;
+      --eggyork: #D4402F;
+      --meat:    #3D2010;
+      --ash:     #8C7B6E;
+      --white:   #FDFAF7;
+      --black:   #1A0F08;
+      --nav-h:   72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background-color: var(--cream);
+      background: var(--cream);
       color: var(--meat);
       font-family: 'Inter', 'Noto Sans TC', sans-serif;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-
-    /* ── Bilingual toggle ── */
     html.lang-en [lang="zh"] { display: none !important; }
     html.lang-zh [lang="en"] { display: none !important; }
     html.lang-zh body { font-family: 'Noto Sans TC', 'Inter', sans-serif; }
-
-    /* ── Active lang button ── */
-    .lang-opt { transition: color 0.25s, font-weight 0.1s; }
-    .lang-opt.active-lang { color: var(--meat); font-weight: 700; }
-
-    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar { width: 2px; }
     ::-webkit-scrollbar-track { background: var(--cream); }
     ::-webkit-scrollbar-thumb { background: var(--eggyork); }
 
-    /* ── Navbar ── */
-    #navbar { transition: background-color 0.4s ease, box-shadow 0.4s ease; }
-    #navbar.scrolled {
-      background-color: rgba(248,241,233,0.96);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 rgba(81,37,8,0.08);
+    /* ── Fixed calligraphy background ── */
+    #bg-calli {
+      position: fixed; top: 50%; left: 50%; z-index: 1;
+      transform: translate(-50%, -50%);
+      pointer-events: none; user-select: none;
+    }
+    #bg-calli img {
+      width: clamp(400px, 58vw, 860px); height: auto;
+      opacity: .09;
+      mix-blend-mode: multiply;
     }
 
-    /* ── Hero overlay ── */
-    .hero-overlay {
-      background: linear-gradient(135deg,rgba(81,37,8,0.72) 0%,rgba(81,37,8,0.38) 55%,rgba(81,37,8,0.12) 100%);
+    /* ══ NAV ══ */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      transition: background .4s, box-shadow .4s;
     }
-
-    /* ── Scroll indicator ── */
-    @keyframes scrollDrop {
-      0%   { transform:translateY(-100%); opacity:0; }
-      30%  { opacity:1; }
-      100% { transform:translateY(100%); opacity:0; }
+    #nav.scrolled {
+      background: rgba(245,239,230,.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 1px 0 rgba(61,32,16,.07);
     }
-    .scroll-drop { animation: scrollDrop 2s ease infinite; }
-
-    /* ── Fade-in ── */
-    .fade-in { opacity:0; transform:translateY(28px); transition:opacity .75s ease,transform .75s ease; }
-    .fade-in.visible { opacity:1; transform:translateY(0); }
-
-    /* ── Dish card ── */
-    .dish-card { transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .4s ease; }
-    .dish-card:hover { transform:translateY(-7px); box-shadow:0 24px 64px rgba(81,37,8,.13); }
-    .dish-card .dish-img { transition:transform .65s ease; }
-    .dish-card:hover .dish-img { transform:scale(1.06); }
-
-    /* ── Stagger ── */
-    .dish-card:nth-child(2) { transition-delay:.08s; }
-    .dish-card:nth-child(3) { transition-delay:.16s; }
-    .dish-card:nth-child(4) { transition-delay:.06s; }
-    .dish-card:nth-child(5) { transition-delay:.14s; }
-    .dish-card:nth-child(6) { transition-delay:.22s; }
-
-    /* ── Menu tabs ── */
-    .tab-btn { position:relative; transition:color .3s ease; }
-    .tab-btn::after {
-      content:''; position:absolute; bottom:-1px; left:0;
-      width:0; height:2px; background:var(--eggyork); transition:width .35s ease;
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; height: 100%;
+      padding: 0 48px; display: flex; align-items: center; justify-content: space-between;
     }
-    .tab-btn.active { color:var(--eggyork); }
-    .tab-btn.active::after, .tab-btn:hover::after { width:100%; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 36px; width: auto; }
+    .nav-logo-text { display: flex; flex-direction: column; }
+    .nav-logo-name { font-size: .7rem; font-weight: 700; letter-spacing: .22em; color: var(--meat); }
+    .nav-logo-sub  { font-size: .42rem; font-weight: 300; letter-spacing: .3em; color: var(--ash); margin-top: 1px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-link {
+      font-size: .6rem; font-weight: 500; letter-spacing: .14em;
+      color: var(--meat); text-decoration: none; position: relative; transition: color .25s;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: var(--eggyork); transition: width .3s;
+    }
+    .nav-link:hover { color: var(--eggyork); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-lang { display: flex; align-items: center; gap: 8px; padding-left: 20px; border-left: 1px solid rgba(61,32,16,.12); }
+    .lang-btn { font-size: .58rem; font-weight: 400; letter-spacing: .1em; color: var(--ash); background: none; border: none; cursor: pointer; transition: color .25s; }
+    .lang-btn.active { color: var(--meat); font-weight: 600; }
+    .lang-sep { font-size: .5rem; color: rgba(61,32,16,.2); }
+    .ham { display: none; flex-direction: column; gap: 5px; padding: 8px; cursor: pointer; background: none; border: none; }
+    .ham-line { width: 22px; height: 1px; background: var(--meat); transition: all .3s; transform-origin: center; display: block; }
+    #mob-nav {
+      position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99;
+      background: rgba(245,239,230,.98); backdrop-filter: blur(14px);
+      max-height: 0; overflow: hidden; transition: max-height .45s ease;
+      border-bottom: 0px solid rgba(61,32,16,.08);
+    }
+    #mob-nav.open { max-height: 420px; border-bottom-width: 1px; }
+    .mob-link {
+      display: block; font-size: .72rem; letter-spacing: .16em; font-weight: 500;
+      color: var(--meat); text-decoration: none; padding: 14px 24px;
+      border-bottom: 1px solid rgba(61,32,16,.05); transition: color .25s, padding-left .2s;
+    }
+    .mob-link:hover { color: var(--eggyork); padding-left: 32px; }
+    .mob-lang { display: flex; align-items: center; gap: 12px; padding: 20px 24px 28px; }
+    .mob-lang-label { font-size: .55rem; letter-spacing: .2em; color: var(--ash); }
 
-    /* ── Buttons ── */
+    /* ══ HERO ══ */
+    #hero { height: 100svh; min-height: 660px; position: relative; z-index: 1; display: flex; align-items: flex-end; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center center; transform: scale(1.06); transition: transform 9s ease; }
+    .hero-bg.loaded img { transform: scale(1); }
+    @media (min-width: 769px) {
+      .hero-bg img { transform: scale(1.18); }
+      .hero-bg.loaded img { transform: scale(1.1); }
+    }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(165deg, rgba(26,15,8,.08) 0%, rgba(26,15,8,.52) 55%, rgba(26,15,8,.84) 100%); }
+    /* 書法層：hero-content 入面 normal flow，顯示係文字上方 */
+    .hero-calli-wrap {
+      pointer-events: none; user-select: none;
+      margin-bottom: 16px;
+    }
+    .hero-calli {
+      display: block;
+      width: clamp(280px, 38vw, 560px);
+      height: auto;
+    }
+    /* 底部文字：fixed to bottom，唔受書法大小影響 */
+    .hero-content { position: relative; z-index: 2; width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 48px calc(var(--nav-h) + 48px); }
+    .hero-eyebrow { font-size: .52rem; font-weight: 500; letter-spacing: .38em; color: rgba(255,255,255,.38); margin-top: 10px; margin-bottom: 0; }
+    .hero-brandname {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 3.2vw, 2.6rem); font-weight: 300;
+      color: rgba(255,255,255,.65); letter-spacing: .35em; margin-bottom: 0;
+    }
+    .hero-tagline { font-size: clamp(.85rem, 1.6vw, 1rem); font-weight: 300; color: rgba(255,255,255,.65); letter-spacing: .06em; margin-bottom: 44px; line-height: 1.65; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .hero-scroll { position: absolute; right: 48px; bottom: 44px; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .hero-scroll-label { font-size: .45rem; letter-spacing: .38em; color: rgba(255,255,255,.3); }
+    .scroll-track { width: 1px; height: 48px; background: rgba(255,255,255,.15); position: relative; overflow: hidden; }
+    .scroll-track::after { content: ''; position: absolute; top: -50%; left: 0; width: 100%; height: 50%; background: rgba(255,255,255,.55); animation: sdrop 2s ease infinite; }
+    @keyframes sdrop { 0%{top:-50%} 100%{top:150%} }
+
+    /* ══ CONCEPT BAR ══ */
+    #concept-bar { background: var(--meat); padding: 0 48px; }
+    .concept-inner { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); position: relative; z-index: 2; }
+    .concept-item { padding: 40px 40px; display: flex; align-items: center; gap: 18px; border-right: 1px solid rgba(255,255,255,.07); }
+    .concept-item:first-child { padding-left: 0; }
+    .concept-item:last-child { border-right: none; }
+    .concept-num { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 300; color: var(--eggyork); line-height: 1; min-width: 52px; text-align: right; }
+    .concept-label { font-size: .52rem; letter-spacing: .28em; font-weight: 500; color: rgba(255,255,255,.3); margin-bottom: 5px; }
+    .concept-val { font-size: .78rem; font-weight: 300; color: rgba(255,255,255,.65); letter-spacing: .04em; }
+
+    /* ══ SHARED ══ */
+    .section { padding: 112px 48px; position: relative; }
+    #concept-bar, #menu-band, footer { position: relative; }
+    .inner { max-width: 1280px; margin: 0 auto; position: relative; z-index: 2; }
+    .eyebrow {
+      display: flex; align-items: center; gap: 12px;
+      font-size: .52rem; font-weight: 500; letter-spacing: .36em; color: var(--eggyork);
+      margin-bottom: 18px;
+    }
+    .eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--eggyork); flex-shrink: 0; }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 300; line-height: 1.1; letter-spacing: .02em; color: var(--meat);
+    }
+    .section-title em { font-style: italic; color: var(--eggyork); }
+
+    /* ══ STORY ══ */
+    #story { background: var(--white); }
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .story-images { position: relative; padding-bottom: 40px; }
+    .story-main { width: 100%; aspect-ratio: 4/5; overflow: hidden; }
+    .story-main img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s; }
+    .story-main:hover img { transform: scale(1.04); }
+    .story-accent {
+      position: absolute; width: 46%; aspect-ratio: 1; overflow: hidden;
+      bottom: 0; right: -16px; border: 6px solid var(--white);
+    }
+    .story-accent img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s; }
+    .story-accent:hover img { transform: scale(1.06); }
+    .story-deco {
+      position: absolute; top: -16px; left: -16px; z-index: 0; pointer-events: none;
+      font-family: 'Cormorant Garamond', serif; font-size: 10rem; font-weight: 300;
+      line-height: 1; color: rgba(61,32,16,.05);
+    }
+    .story-text { padding-left: 16px; }
+    .story-body { font-size: .88rem; color: var(--ash); line-height: 1.95; margin: 28px 0 32px; }
+    .story-stats { display: grid; grid-template-columns: repeat(3,1fr); padding-top: 32px; border-top: 1px solid rgba(61,32,16,.1); margin-top: 8px; }
+    .stat-n { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--eggyork); line-height: 1; margin-bottom: 5px; }
+    .stat-l { font-size: .58rem; letter-spacing: .14em; color: var(--ash); }
+
+    /* ══ SIGNATURE ══ */
+    #signature { background: var(--cream); }
+    .sig-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; }
+    .dishes-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .dish-card { background: var(--white); overflow: hidden; transition: transform .4s; }
+    .dish-card:hover { transform: translateY(-5px); }
+    .dish-img { overflow: hidden; aspect-ratio: 4/3; }
+    .dish-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
+    .dish-card:hover .dish-img img { transform: scale(1.07); }
+    .dish-info { padding: 22px 24px 26px; }
+    .dish-tag { font-size: .48rem; letter-spacing: .26em; font-weight: 500; color: var(--eggyork); margin-bottom: 8px; }
+    .dish-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: var(--meat); margin-bottom: 8px; line-height: 1.2; }
+    .dish-desc { font-size: .73rem; color: var(--ash); line-height: 1.7; }
+    .dish-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 300; color: var(--meat); margin-top: 14px; }
+
+    /* ══ MENU CTA BAND ══ */
+    #menu-band { background: var(--meat); padding: 64px 48px; }
+    .band-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 40px; flex-wrap: wrap; position: relative; z-index: 2; }
+    .band-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; color: #fff; }
+    .band-title em { font-style: italic; color: var(--eggyork); }
+    .band-body { font-size: .8rem; color: rgba(255,255,255,.4); max-width: 280px; line-height: 1.75; flex: 1; }
+
+    /* ══ GALLERY ══ */
+    #gallery { background: var(--black); padding: 112px 0; }
+    .gallery-hd { padding: 0 48px; max-width: 1280px; margin: 0 auto 52px; position: relative; z-index: 2; }
+    .gallery-hd .eyebrow { color: rgba(255,255,255,.28); }
+    .gallery-hd .eyebrow::before { background: rgba(255,255,255,.28); }
+    .gallery-hd .section-title { color: #fff; }
+    .g-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 260px 260px; gap: 3px; position: relative; z-index: 2; }
+    .g-cell { overflow: hidden; }
+    .g-cell img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s, filter .5s; filter: brightness(.82) saturate(.88); }
+    .g-cell:hover img { transform: scale(1.07); filter: brightness(1) saturate(1); }
+    .g-main { grid-row: 1 / 3; }
+
+    /* ══ FULL MENU ══ */
+    #full-menu { background: var(--cream); }
+    .m-tabs { display: flex; border-bottom: 1px solid rgba(61,32,16,.1); margin-bottom: 44px; overflow-x: auto; }
+    .m-tab {
+      padding: 12px 30px; font-size: .58rem; letter-spacing: .2em; font-weight: 500;
+      color: var(--ash); background: none; border: none; cursor: pointer;
+      position: relative; transition: color .25s; white-space: nowrap; flex-shrink: 0;
+    }
+    .m-tab::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 1.5px; background: var(--eggyork); transform: scaleX(0); transition: transform .3s; }
+    .m-tab.active { color: var(--eggyork); }
+    .m-tab.active::after { transform: scaleX(1); }
+    .m-panel { display: none; max-width: 920px; }
+    .m-panel.show { display: block; animation: fadeUp .35s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    .m-row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+      padding: 20px 0; border-bottom: 1px solid rgba(61,32,16,.07);
+      transition: padding-left .2s;
+    }
+    .m-row:hover { padding-left: 10px; }
+    .m-row-left { flex: 1; }
+    .m-name { font-size: .86rem; font-weight: 500; color: var(--meat); margin-bottom: 4px; }
+    .m-desc { font-size: .73rem; color: var(--ash); line-height: 1.65; }
+    .m-price { font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; font-weight: 300; color: var(--meat); white-space: nowrap; }
+    .m-badge { font-size: .44rem; letter-spacing: .18em; font-weight: 500; color: var(--eggyork); border: 1px solid rgba(212,64,47,.3); padding: 2px 6px; vertical-align: middle; margin-left: 6px; }
+    .m-section-head { font-size: .55rem; letter-spacing: .24em; font-weight: 500; color: var(--eggyork); padding: 20px 0 12px; border-bottom: 1px solid rgba(61,32,16,.1); margin-bottom: 0; }
+    .upgrade-bar { margin-top: 24px; padding: 16px 20px; border-left: 2px solid var(--eggyork); background: rgba(212,64,47,.03); font-size: .76rem; color: var(--ash); line-height: 1.7; }
+    .upgrade-bar strong { color: var(--eggyork); }
+
+    /* ══ LOCATION ══ */
+    #location { background: var(--white); }
+    .loc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .hrs-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(61,32,16,.07); font-size: .82rem; }
+    .hrs-row:last-child { border-bottom: none; }
+    .hrs-day { color: var(--meat); }
+    .hrs-time { color: var(--ash); font-weight: 300; }
+    .hrs-time.hi { color: var(--eggyork); font-weight: 500; }
+    .ct-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .ct-icon { width: 32px; height: 32px; border: 1px solid rgba(61,32,16,.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .ct-val { font-size: .8rem; color: var(--ash); line-height: 1.6; }
+    .map-wrap { aspect-ratio: 4/3; background: var(--cream); position: relative; overflow: hidden; }
+    .map-ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+    .map-pin-box { width: 44px; height: 44px; background: var(--eggyork); display: flex; align-items: center; justify-content: center; }
+    .map-grid { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .07; }
+
+    /* ══ BUTTONS ══ */
     .btn-fill {
-      position:relative; overflow:hidden; display:inline-block; transition:color .3s ease;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--eggyork); color: #fff; font-size: .58rem; font-weight: 500; letter-spacing: .2em;
+      padding: 15px 34px; text-decoration: none; position: relative; overflow: hidden; transition: color .3s;
     }
-    .btn-fill::before {
-      content:''; position:absolute; inset:0; background:var(--meat);
-      transform:translateX(-101%); transition:transform .35s ease; z-index:0;
+    .btn-fill::before { content: ''; position: absolute; inset: 0; background: var(--meat); transform: translateX(-101%); transition: transform .35s; z-index: 0; }
+    .btn-fill:hover::before { transform: translateX(0); }
+    .btn-fill span { position: relative; z-index: 1; }
+    .btn-ol-light {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(255,255,255,.32); color: rgba(255,255,255,.72);
+      font-size: .58rem; font-weight: 500; letter-spacing: .2em; padding: 14px 34px;
+      text-decoration: none; transition: background .3s, color .3s, border-color .3s;
     }
-    .btn-fill:hover::before { transform:translateX(0); }
-    .btn-fill .btn-label { position:relative; z-index:1; }
-
-    .btn-outline {
-      display:inline-block; border:1px solid currentColor;
-      transition:background-color .3s ease,color .3s ease;
+    .btn-ol-light:hover { background: rgba(255,255,255,.1); color: #fff; border-color: rgba(255,255,255,.55); }
+    .btn-ol-dark {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(61,32,16,.22); color: var(--meat);
+      font-size: .58rem; font-weight: 500; letter-spacing: .2em; padding: 14px 34px;
+      text-decoration: none; transition: background .3s, color .3s;
     }
-    .btn-outline:hover { background-color:#fff; color:var(--meat); }
-
-    /* ── Divider ── */
-    .jp-rule { width:36px; height:2px; background:var(--eggyork); }
-
-    /* ── Section label ── */
-    .sec-label {
-      font-size:.62rem; letter-spacing:.35em; font-weight:500;
-      text-transform:uppercase; color:var(--eggyork);
+    .btn-ol-dark:hover { background: var(--meat); color: #fff; }
+    .btn-text {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: .58rem; font-weight: 500; letter-spacing: .18em;
+      color: var(--meat); text-decoration: none; transition: color .25s;
     }
+    .btn-text:hover { color: var(--eggyork); }
+    .btn-text svg { transition: transform .3s; }
+    .btn-text:hover svg { transform: translateX(4px); }
 
-    /* ── Menu rows ── */
-    .menu-row { transition:background-color .25s ease, padding-left .25s ease; }
-    .menu-row:hover { background-color:rgba(230,68,94,.04); padding-left:.75rem; }
+    /* ══ FOOTER ══ */
+    footer { background: var(--black); padding: 80px 48px 40px; }
+    .ft-top { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,.06); position: relative; z-index: 2; }
+    .ft-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .ft-brand img { height: 32px; width: auto; filter: brightness(0) invert(1); opacity: .55; }
+    .ft-brand-name { font-size: .72rem; font-weight: 700; letter-spacing: .2em; color: #fff; }
+    .ft-brand-sub { font-size: .42rem; letter-spacing: .26em; color: rgba(255,255,255,.22); margin-top: 2px; }
+    .ft-body { font-size: .78rem; color: rgba(255,255,255,.32); line-height: 1.85; max-width: 290px; }
+    .ft-col-title { font-size: .5rem; letter-spacing: .3em; font-weight: 500; color: rgba(255,255,255,.22); margin-bottom: 22px; }
+    .ft-link { display: block; font-size: .76rem; color: rgba(255,255,255,.38); text-decoration: none; margin-bottom: 11px; transition: color .25s; }
+    .ft-link:hover { color: var(--eggyork); }
+    .ft-contact { font-size: .76rem; color: rgba(255,255,255,.38); margin-bottom: 8px; line-height: 1.6; }
+    .social-row { display: flex; gap: 7px; margin-top: 22px; }
+    .social-btn { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.14); display: flex; align-items: center; justify-content: center; text-decoration: none; transition: background .25s, border-color .25s; }
+    .social-btn:hover { background: var(--eggyork); border-color: var(--eggyork); }
+    .ft-bottom { max-width: 1280px; margin: 28px auto 0; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+    .ft-copy { font-size: .58rem; color: rgba(255,255,255,.15); letter-spacing: .1em; }
 
-    /* ── Set includes tag ── */
-    .set-includes {
-      display:inline-block; font-size:.62rem; letter-spacing:.06em;
-      color:var(--eggyork); border:1px solid rgba(230,68,94,.3);
-      padding:1px 6px; margin-bottom:4px;
+    /* ══ REVEAL ══ */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1024px) {
+      .nav-inner { padding: 0 24px; }
+      .nav-links { gap: 18px; }
+      .section { padding: 80px 24px; }
+      #concept-bar, #menu-band { padding-left: 24px; padding-right: 24px; }
+      .hero-content { padding: 0 24px calc(var(--nav-h) + 48px); }
+      .hero-scroll { right: 24px; }
+      .gallery-hd { padding: 0 24px; }
+      .ft-top { gap: 40px; }
+      footer { padding: 64px 24px 36px; }
     }
-
-    /* ── Delivery app ── */
-    .delivery-app {
-      transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
-      border:1px solid transparent;
+    @media (max-width: 768px) {
+      .nav-links, .nav-lang { display: none; }
+      .ham { display: flex; }
+      .hero-calli-wrap { display: flex; justify-content: center; margin: 0 -24px; }
+      .hero-calli { width: calc(100vw - 24px); }
+      #hero { align-items: flex-end; }
+      .hero-content { padding: 0 24px 8vh; }
+      /* Mobile background 書法：置中 */
+      #bg-calli { right: 50%; transform: translate(50%, -50%); }
+      #bg-calli img { width: clamp(200px, 85vw, 360px); }
+      .hero-scroll { display: none; }
+      .concept-inner { grid-template-columns: 1fr; }
+      .concept-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); padding: 28px 0; }
+      .concept-item:last-child { border-bottom: none; }
+      .story-grid { grid-template-columns: 1fr; gap: 40px; }
+      .story-accent { display: none; }
+      .story-text { padding-left: 0; }
+      .sig-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .dishes-grid { grid-template-columns: 1fr; }
+      .band-inner { flex-direction: column; gap: 20px; }
+      .g-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 200px 160px; }
+      .g-main { grid-row: 1; grid-column: 1 / 3; }
+      .loc-grid { grid-template-columns: 1fr; gap: 48px; }
+      .ft-top { grid-template-columns: 1fr; gap: 36px; }
+      .ft-bottom { flex-direction: column; gap: 8px; text-align: center; }
     }
-    .delivery-app:hover {
-      transform:translateY(-5px);
-      box-shadow:0 16px 48px rgba(81,37,8,.1);
-      border-color:var(--eggyork);
+    @media (max-width: 480px) {
+      .section { padding: 64px 16px; }
+      .hero-content { padding: 0 16px calc(var(--nav-h) + 32px); }
+      .hero-calli-wrap { margin: 0 -16px; }
+      #concept-bar, #menu-band { padding-left: 16px; padding-right: 16px; }
+      footer { padding: 56px 16px 28px; }
     }
-
-    /* ── Mobile menu ── */
-    #mobile-panel { max-height:0; overflow:hidden; transition:max-height .45s ease; }
-    #mobile-panel.open { max-height:360px; }
-
-    /* ── Tab panel ── */
-    .tab-panel { animation:panelIn .4s ease both; }
-    @keyframes panelIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-
-    /* ── Price range badge ── */
-    .price-range { font-family:'Inter',sans-serif; }
   </style>
 </head>
 
 <body>
 
-<!-- ═══════ NAVBAR ═══════ -->
-<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 px-6 md:px-12">
-  <div class="max-w-7xl mx-auto flex items-center justify-between py-5">
+<!-- ═══ FIXED BACKGROUND CALLIGRAPHY ═══ -->
+<div id="bg-calli" aria-hidden="true">
+  <img src="image/古早味 Calligraphy_Meat.webp" alt="">
+</div>
 
-    <a href="#hero" class="flex items-center gap-3 leading-none">
-      <img src="image/Guozami Icon_Full color.webp" alt="GUOZAMI" style="height:42px;width:auto;display:block;">
-      <span class="flex flex-col leading-none">
-        <span class="text-meat font-bold" style="font-size:1.15rem;letter-spacing:.18em;">GUOZAMI</span>
-        <span class="text-meat opacity-40 font-light" style="font-size:.55rem;letter-spacing:.28em;margin-top:2px;">
-          <span lang="en">TAIWANESE CUISINE</span>
-          <span lang="zh">台式料理</span>
-        </span>
-      </span>
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <img src="image/Guozami Icon_Full color.webp" alt="GUOZAMI">
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">GUOZAMI</span>
+        <span class="nav-logo-sub"><span lang="en">TAIWANESE CUISINE</span><span lang="zh">台式料理</span></span>
+      </div>
     </a>
 
-    <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8">
-      <a href="#menu"        class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">MENU</span><span lang="zh">菜單</span></a>
-      <a href="#location"    class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">LOCATION</span><span lang="zh">位置</span></a>
-      <a href="#delivery"    class="text-meat text-xs hover:text-eggyork transition-colors duration-300" style="letter-spacing:.12em;"><span lang="en">ORDER</span><span lang="zh">外賣</span></a>
-
-      <!-- Language switcher -->
-      <div class="flex items-center gap-2 border-l border-meat/15 pl-5">
-        <button class="lang-opt active-lang text-meat/50 text-xs hover:text-meat transition-colors" data-lang="en" style="letter-spacing:.08em;">EN</button>
-        <span class="text-meat/20 text-xs select-none">|</span>
-        <button class="lang-opt text-meat/50 text-xs hover:text-meat transition-colors" data-lang="zh" style="letter-spacing:.08em;">中文</button>
+    <div class="nav-links">
+      <a href="#story"     class="nav-link"><span lang="en">STORY</span><span lang="zh">故事</span></a>
+      <a href="#signature" class="nav-link"><span lang="en">SIGNATURE</span><span lang="zh">招牌</span></a>
+      <a href="#full-menu" class="nav-link"><span lang="en">MENU</span><span lang="zh">菜單</span></a>
+      <a href="#location"  class="nav-link"><span lang="en">LOCATION</span><span lang="zh">位置</span></a>
+      <div class="nav-lang">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" data-lang="zh">中文</button>
       </div>
     </div>
 
-    <button id="ham-btn" class="md:hidden flex flex-col gap-[5px] p-2 -mr-2" aria-label="Open menu">
-      <span class="ham-bar block w-6 h-px bg-meat transition-all duration-300 origin-center"></span>
-      <span class="ham-bar block w-4 h-px bg-meat transition-all duration-300"></span>
-      <span class="ham-bar block w-6 h-px bg-meat transition-all duration-300 origin-center"></span>
+    <button class="ham" id="ham" aria-label="Menu">
+      <span class="ham-line"></span>
+      <span class="ham-line" style="width:15px;"></span>
+      <span class="ham-line"></span>
     </button>
-  </div>
-
-  <!-- Mobile panel -->
-  <div id="mobile-panel" class="md:hidden bg-cream border-t border-meat/10">
-    <div class="flex flex-col gap-5 px-2 py-6">
-      <a href="#menu"        class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">MENU</span><span lang="zh">菜單</span></a>
-      <a href="#location"    class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">LOCATION</span><span lang="zh">位置</span></a>
-      <a href="#delivery"    class="text-meat text-sm" style="letter-spacing:.1em;"><span lang="en">ORDER</span><span lang="zh">外賣</span></a>
-      <!-- Mobile lang switcher -->
-      <div class="flex items-center gap-3 pt-1 border-t border-meat/10">
-        <span class="text-meat/40 text-xs" style="letter-spacing:.1em;">LANGUAGE</span>
-        <button class="lang-opt active-lang text-meat/50 text-xs font-medium" data-lang="en">EN</button>
-        <span class="text-meat/20 text-xs select-none">|</span>
-        <button class="lang-opt text-meat/50 text-xs" data-lang="zh">中文</button>
-      </div>
-    </div>
   </div>
 </nav>
 
+<div id="mob-nav">
+  <a href="#story"     class="mob-link"><span lang="en">STORY</span><span lang="zh">故事</span></a>
+  <a href="#signature" class="mob-link"><span lang="en">SIGNATURE DISHES</span><span lang="zh">招牌菜</span></a>
+  <a href="#full-menu" class="mob-link"><span lang="en">FULL MENU</span><span lang="zh">完整菜單</span></a>
+  <a href="#location"  class="mob-link"><span lang="en">LOCATION &amp; HOURS</span><span lang="zh">位置 &amp; 時間</span></a>
+  <div class="mob-lang">
+    <span class="mob-lang-label">LANGUAGE</span>
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <span class="lang-sep">·</span>
+    <button class="lang-btn" data-lang="zh">中文</button>
+  </div>
+</div>
 
-<!-- ═══════ HERO ═══════ -->
-<section id="hero" class="relative w-full flex items-center overflow-hidden" style="min-height:100svh;">
-  <div class="absolute inset-0">
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg" id="heroBg">
     <img src="https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=1920&q=85&fit=crop"
-         alt="Taiwanese cuisine — replace with GUOZAMI brand photo"
-         class="w-full h-full object-cover object-center">
-    <div class="hero-overlay absolute inset-0"></div>
+         alt="Taiwanese cuisine"
+         onload="document.getElementById('heroBg').classList.add('loaded')">
+    <div class="hero-overlay"></div>
   </div>
 
-  <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full pt-28 pb-24">
-    <div class="max-w-2xl">
-      <p class="sec-label mb-7" style="color:rgba(255,255,255,.55);letter-spacing:.4em;">
-        <span lang="en">AUTHENTIC TAIWANESE CUISINE</span>
-        <span lang="zh">道地台灣料理</span>
-      </p>
-
-      <h1 class="text-white font-bold leading-none mb-5" style="font-size:clamp(3.8rem,10vw,7.5rem);letter-spacing:.07em;">
-        GUOZAMI
-      </h1>
-
-      <p class="text-white/90 font-light mb-3" style="font-size:clamp(1.1rem,3vw,1.6rem);letter-spacing:.06em;">
-        <span lang="en">Taiwanese Flavour · Everyday Warmth</span>
-        <span lang="zh">台灣味・日常暖</span>
-      </p>
-
-      <p class="text-white/55 font-light mb-14" style="font-size:clamp(.82rem,2vw,.96rem);letter-spacing:.04em;">
-        <span lang="en">The everyday joy of a bowl of braised pork rice, bringing you home.</span>
-        <span lang="zh">一碗滷肉飯的日常幸福，帶你回家。</span>
-      </p>
-
-      <div class="flex flex-wrap gap-4">
-        <a href="#menu" class="btn-fill bg-eggyork text-white text-xs px-9 py-4 font-medium" style="letter-spacing:.2em;">
-          <span class="btn-label"><span lang="en">VIEW MENU</span><span lang="zh">查看菜單</span></span>
-        </a>
-        <a href="#delivery" class="flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-300 text-xs py-4" style="letter-spacing:.15em;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          <span lang="en">ORDER DELIVERY</span><span lang="zh">外賣訂購</span>
-        </a>
-      </div>
+  <!-- 底部文字層：固定在底部，書法喺文字上方 -->
+  <div class="hero-content">
+    <div class="hero-calli-wrap">
+      <img src="image/古早味 Calligraphy_White.webp" alt="古早味" class="hero-calli">
+    </div>
+    <p class="hero-brandname">GUOZAMI</p>
+    <p class="hero-eyebrow">
+      <span lang="en">AUTHENTIC TAIWANESE CUISINE · CALGARY, CANADA</span>
+      <span lang="zh">道地台灣料理 · 卡加利，加拿大</span>
+    </p>
+    <p class="hero-tagline">
+      <span lang="en">Taiwanese Flavour<br>Everyday Warmth</span>
+      <span lang="zh">台灣味<br>日常暖</span>
+    </p>
+    <div class="hero-ctas">
+      <a href="#full-menu" class="btn-fill"><span><span lang="en">VIEW MENU</span><span lang="zh">查看菜單</span></span></a>
+      <a href="#location"  class="btn-ol-light"><span lang="en">FIND US</span><span lang="zh">找到我們</span></a>
     </div>
   </div>
 
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 pointer-events-none">
-    <span style="font-size:.55rem;letter-spacing:.35em;">SCROLL</span>
-    <div class="w-px h-10 overflow-hidden" style="background:rgba(255,255,255,.15);">
-      <div class="scroll-drop w-full h-1/2 bg-white/60"></div>
-    </div>
+  <div class="hero-scroll">
+    <div class="scroll-track"></div>
+    <span class="hero-scroll-label">SCROLL</span>
   </div>
 </section>
 
 
-<!-- ═══════ ABOUT ═══════ -->
-<section id="about" class="py-24 md:py-36 px-6 md:px-12 bg-white">
-  <div class="max-w-7xl mx-auto">
-    <div class="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+<!-- ═══ CONCEPT BAR ═══ -->
+<div id="concept-bar">
+  <div class="concept-inner">
+    <div class="concept-item">
+      <span class="concept-num">15<sup style="font-size:.42em;vertical-align:super;">+</sup></span>
+      <div>
+        <p class="concept-label"><span lang="en">YEARS OF CRAFT</span><span lang="zh">年料理經驗</span></p>
+        <p class="concept-val"><span lang="en">Generational recipes</span><span lang="zh">世代傳承食譜</span></p>
+      </div>
+    </div>
+    <div class="concept-item">
+      <span class="concept-num">50<sup style="font-size:.42em;vertical-align:super;">+</sup></span>
+      <div>
+        <p class="concept-label"><span lang="en">AUTHENTIC DISHES</span><span lang="zh">道地台灣菜</span></p>
+        <p class="concept-val"><span lang="en">Tradition on every plate</span><span lang="zh">每盤皆是傳統滋味</span></p>
+      </div>
+    </div>
+    <div class="concept-item">
+      <span class="concept-num" style="font-size:2rem;min-width:52px;text-align:right;">∞</span>
+      <div>
+        <p class="concept-label"><span lang="en">THE TASTE OF HOME</span><span lang="zh">家的滋味</span></p>
+        <p class="concept-val"><span lang="en">A bowl that brings you back</span><span lang="zh">一碗帶你回家的溫暖</span></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <div class="fade-in">
-        <p class="sec-label mb-5"><span lang="en">OUR STORY</span><span lang="zh">我們的故事</span></p>
-        <div class="jp-rule mb-8"></div>
 
-        <h2 class="text-meat font-bold mb-8 leading-tight" style="font-size:clamp(1.9rem,5vw,3rem);letter-spacing:.02em;">
-          <span lang="en">From the Taiwanese<br>Kitchen to Your Table</span>
-          <span lang="zh">從台灣廚房<br>到你的餐桌</span>
+<!-- ═══ STORY ═══ -->
+<section id="story" class="section">
+  <div class="inner">
+    <div class="story-grid">
+
+      <div class="story-images reveal">
+        <span class="story-deco">故</span>
+        <div class="story-main">
+          <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=900&q=80&fit=crop" alt="Taiwanese kitchen">
+        </div>
+        <div class="story-accent">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=450&q=80&fit=crop" alt="Taiwanese drink">
+        </div>
+      </div>
+
+      <div class="story-text reveal d1">
+        <p class="eyebrow"><span lang="en">OUR STORY</span><span lang="zh">我們的故事</span></p>
+        <h2 class="section-title">
+          <span lang="en">From the Taiwanese<br>Kitchen to <em>Your Table</em></span>
+          <span lang="zh">從台灣廚房<br>到<em>你的餐桌</em></span>
         </h2>
-
-        <p lang="en" class="text-meat/70 leading-loose mb-5" style="font-size:.92rem;">
-          The story of GUOZAMI begins in a Taiwanese family kitchen. Every dish carries grandma's recipe, mum's technique, and that comforting flavour you never forget. We believe the best food isn't found in Michelin-starred restaurants — it's in that bowl of braised pork rice that makes you feel at home.
+        <p class="story-body">
+          <span lang="en">The story of GUOZAMI begins in a Taiwanese family kitchen. Every dish carries grandma's recipe, mum's technique, and that comforting flavour you never forget. We believe the best food isn't found in Michelin-starred restaurants — it's in that bowl of braised pork rice that makes you feel at home.<br><br>We insist on sourcing the finest ingredients, slow-braised and carefully prepared using traditional techniques, so every bite carries the true warmth of Taiwan.</span>
+          <span lang="zh">GUOZAMI 的故事，從一個台灣家庭的廚房開始。每一道菜，都是外婆的配方、媽媽的手藝，與那個讓人安心的滋味。我們相信，最好的料理不在星級餐廳，而在那一碗讓你想起家的滷肉飯。<br><br>我們堅持使用優質食材，以傳統技法慢燉細熬，讓每一口都充滿真實的台灣溫度。</span>
         </p>
-        <p lang="zh" class="text-meat/70 leading-loose mb-5" style="font-size:.92rem;">
-          GUOZAMI 的故事，從一個台灣家庭的廚房開始。每一道菜，都是外婆的配方、媽媽的手藝，與那個讓人安心的滋味。我們相信，最好的料理不在星級餐廳，而在那一碗讓你想起家的滷肉飯。
-        </p>
-
-        <p lang="en" class="text-meat/70 leading-loose mb-12" style="font-size:.92rem;">
-          We insist on sourcing Taiwanese local ingredients, slow-braised and carefully prepared using traditional techniques, so every bite carries the true warmth of Taiwan. This is the place you'll want to come back to every day.
-        </p>
-        <p lang="zh" class="text-meat/70 leading-loose mb-12" style="font-size:.92rem;">
-          我們堅持使用台灣本地食材，以傳統技法慢燉細熬，讓每一口都充滿真實的台灣溫度。這裡，是你每天都想回來的地方。
-        </p>
-
-        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-meat/10">
-          <div>
-            <p class="text-eggyork font-bold leading-none mb-2" style="font-size:2.2rem;">15<span style="font-size:1.1rem;">+</span></p>
-            <p class="text-meat/45 text-xs" style="letter-spacing:.05em;"><span lang="en">Years of experience</span><span lang="zh">年料理經驗</span></p>
-          </div>
-          <div>
-            <p class="text-eggyork font-bold leading-none mb-2" style="font-size:2.2rem;">50<span style="font-size:1.1rem;">+</span></p>
-            <p class="text-meat/45 text-xs" style="letter-spacing:.05em;"><span lang="en">Authentic dishes</span><span lang="zh">道地台灣菜</span></p>
-          </div>
-          <div>
-            <p class="text-eggyork font-bold leading-none mb-2" style="font-size:2.2rem;">∞</p>
-            <p class="text-meat/45 text-xs" style="letter-spacing:.05em;"><span lang="en">The taste of home</span><span lang="zh">家的滋味</span></p>
-          </div>
+        <a href="#full-menu" class="btn-text">
+          <span lang="en">EXPLORE THE MENU</span><span lang="zh">探索菜單</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <div class="story-stats">
+          <div><p class="stat-n">15<span style="font-size:1.2rem">+</span></p><p class="stat-l"><span lang="en">Years</span><span lang="zh">年</span></p></div>
+          <div><p class="stat-n">50<span style="font-size:1.2rem">+</span></p><p class="stat-l"><span lang="en">Dishes</span><span lang="zh">道菜</span></p></div>
+          <div><p class="stat-n">∞</p><p class="stat-l"><span lang="en">Warmth</span><span lang="zh">溫暖</span></p></div>
         </div>
       </div>
 
-      <div class="fade-in grid grid-cols-2 gap-3">
-        <div class="col-span-2 overflow-hidden" style="height:270px;">
-          <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=900&q=80&fit=crop"
-               alt="Taiwanese food — replace with brand photo"
-               class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]">
-        </div>
-        <div class="overflow-hidden" style="height:155px;">
-          <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=450&q=80&fit=crop"
-               alt="Braised pork rice — replace with brand photo"
-               class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.05]">
-        </div>
-        <div class="overflow-hidden" style="height:155px;">
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=450&q=80&fit=crop"
-               alt="Bubble tea — replace with brand photo"
-               class="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.05]">
-        </div>
-      </div>
     </div>
   </div>
 </section>
 
 
-<!-- ═══════ SIGNATURE DISHES ═══════ -->
-<section id="signature" class="py-24 md:py-36 px-6 md:px-12 bg-cream">
-  <div class="max-w-7xl mx-auto">
-
-    <div class="text-center mb-16 fade-in">
-      <p class="sec-label mb-5"><span lang="en">SIGNATURE DISHES</span><span lang="zh">招牌菜</span></p>
-      <div class="jp-rule mx-auto mb-8"></div>
-      <h2 class="text-meat font-bold mb-4" style="font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.03em;">
-        <span lang="en">Our Signatures</span><span lang="zh">招牌菜</span>
-      </h2>
-      <p class="text-meat/50 max-w-sm mx-auto text-sm leading-relaxed">
-        <span lang="en">Every dish is the soul of GUOZAMI — slow-cooked with time and warmth, a memory of Taiwan on every plate.</span>
-        <span lang="zh">每一道都是 GUOZAMI 的靈魂，用時間與溫度慢熬出的台灣記憶。</span>
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-
-      <!-- Card 1: Signature Braised Pork Rice Set -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=640&q=80&fit=crop"
-               alt="Braised Pork Rice Set — replace with actual dish photo"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">SET</span><span lang="zh">套餐</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Signature Braised Pork Rice Set</span>
-                <span lang="zh">招牌滷肉飯套餐</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$15</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-            <span lang="zh">滷肉飯（大）・湯（小）・小菜 ×2・飲料</span>
-          </p>
-        </div>
+<!-- ═══ SIGNATURE DISHES ═══ -->
+<section id="signature" class="section">
+  <div class="inner">
+    <div class="sig-head reveal">
+      <div>
+        <p class="eyebrow"><span lang="en">SIGNATURE DISHES</span><span lang="zh">招牌菜</span></p>
+        <h2 class="section-title">
+          <span lang="en">Our <em>Signatures</em></span>
+          <span lang="zh">我們的<em>招牌</em></span>
+        </h2>
       </div>
-
-      <!-- Card 2: Steamed Egg Set -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=640&q=80&fit=crop"
-               alt="Steamed Egg Braised Pork Rice Set — replace with actual dish photo"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">MUST TRY</span><span lang="zh">必點</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Steamed Egg Braised Pork Rice Set</span>
-                <span lang="zh">蒸蛋滷肉飯套餐</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$17</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Steamed Water Egg · Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-            <span lang="zh">水蒸蛋・滷肉飯（大）・湯（小）・小菜 ×2・飲料</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 3: Pork Belly / Chicken Set -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=640&q=80&fit=crop"
-               alt="Braised Pork Belly Rice Set — replace with actual dish photo"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">POPULAR</span><span lang="zh">人氣</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Pork Belly / Shredded Chicken Rice Set</span>
-                <span lang="zh">爌肉飯／雞肉絲飯套餐</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$15</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Pork Belly or Shredded Chicken Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-            <span lang="zh">爌肉飯或雞肉絲飯（大）・湯（小）・小菜 ×2・飲料</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 4: Beef Noodle Set -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=640&q=80&fit=crop"
-               alt="Beef Noodle Set — replace with actual dish photo"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">SET</span><span lang="zh">套餐</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Beef Noodle Set</span>
-                <span lang="zh">牛肉麵套餐</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$15</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Beef Noodle Soup · 2 Side Dishes</span>
-            <span lang="zh">牛肉麵・小菜 ×2</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 5: Fried Chicken -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=640&q=80&fit=crop"
-               alt="Fried Chicken with Thai Basil — replace with actual dish photo"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">STREET FOOD</span><span lang="zh">街頭風味</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Fried Chicken with Thai Basil</span>
-                <span lang="zh">九層塔炸雞</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$8</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Crispy fried chicken tossed with fresh Thai basil — a true night market classic.</span>
-            <span lang="zh">香酥炸雞配新鮮九層塔，外脆內嫩，夜市必吃滋味。</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Card 6: Buddha Jumps Over the Wall -->
-      <div class="dish-card fade-in bg-white overflow-hidden">
-        <div class="overflow-hidden" style="height:240px;">
-          <img src="image/Buddha Jumps Over the Wall.webp"
-               alt="Buddha Jumps Over the Wall — 佛跳牆"
-               class="dish-img w-full h-full object-cover">
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <p class="text-eggyork mb-1" style="font-size:.6rem;letter-spacing:.25em;">
-                <span lang="en">PREMIUM</span><span lang="zh">頂級湯品</span>
-              </p>
-              <h3 class="text-meat font-bold" style="font-size:1.05rem;letter-spacing:.02em;">
-                <span lang="en">Buddha Jumps Over the Wall</span>
-                <span lang="zh">佛跳牆</span>
-              </h3>
-            </div>
-            <span class="text-meat/80 font-light" style="font-size:1.05rem;">$8</span>
-          </div>
-          <p class="text-meat/55 text-xs leading-relaxed">
-            <span lang="en">Premium slow-braised soup. Upgrade any set combo for just +$5.</span>
-            <span lang="zh">頂級燉湯，套餐可加 $5 升級享用。</span>
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="text-center mt-14 fade-in">
-      <a href="#menu" class="inline-flex items-center gap-3 text-meat hover:text-eggyork transition-colors duration-300 text-xs" style="letter-spacing:.22em;">
-        <span lang="en">SEE FULL MENU</span><span lang="zh">查看完整菜單</span>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <a href="#full-menu" class="btn-text d2" style="align-self:flex-end;margin-bottom:6px;">
+        <span lang="en">FULL MENU</span><span lang="zh">完整菜單</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
+
+    <div class="dishes-grid reveal">
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=640&q=80&fit=crop" alt="Braised Pork Rice Set"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">SIGNATURE SET</span><span lang="zh">招牌套餐</span></p>
+          <h3 class="dish-name"><span lang="en">Braised Pork Rice Set</span><span lang="zh">滷肉飯套餐</span></h3>
+          <p class="dish-desc"><span lang="en">Braised Pork Rice (Lg) · Soup · 2 Sides · Drink</span><span lang="zh">滷肉飯（大）· 湯 · 小菜 ×2 · 飲料</span></p>
+          <p class="dish-price">$15</p>
+        </div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=640&q=80&fit=crop" alt="Steamed Egg Set"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">MUST TRY</span><span lang="zh">必點</span></p>
+          <h3 class="dish-name"><span lang="en">Steamed Egg Braised Pork Set</span><span lang="zh">蒸蛋滷肉飯套餐</span></h3>
+          <p class="dish-desc"><span lang="en">Steamed Water Egg · Braised Pork Rice · Soup · 2 Sides · Drink</span><span lang="zh">水蒸蛋 · 滷肉飯 · 湯 · 小菜 ×2 · 飲料</span></p>
+          <p class="dish-price">$17</p>
+        </div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="image/Buddha Jumps Over the Wall.webp" alt="Buddha Jumps Over the Wall"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">PREMIUM</span><span lang="zh">頂級湯品</span></p>
+          <h3 class="dish-name"><span lang="en">Buddha Jumps Over the Wall</span><span lang="zh">佛跳牆</span></h3>
+          <p class="dish-desc"><span lang="en">Premium slow-braised soup. Upgrade any set for +$5.</span><span lang="zh">頂級燉湯，套餐加 $5 即可升級。</span></p>
+          <p class="dish-price">$8</p>
+        </div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=640&q=80&fit=crop" alt="Pork Belly Set"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">POPULAR</span><span lang="zh">人氣</span></p>
+          <h3 class="dish-name"><span lang="en">Pork Belly / Shredded Chicken Set</span><span lang="zh">爌肉飯／雞肉絲飯套餐</span></h3>
+          <p class="dish-desc"><span lang="en">Pork Belly or Shredded Chicken Rice · Soup · 2 Sides · Drink</span><span lang="zh">爌肉飯或雞肉絲飯 · 湯 · 小菜 ×2 · 飲料</span></p>
+          <p class="dish-price">$15</p>
+        </div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="https://images.unsplash.com/photo-1569562211093-4ed0d0758f12?w=640&q=80&fit=crop" alt="Beef Noodle Set"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">SET</span><span lang="zh">套餐</span></p>
+          <h3 class="dish-name"><span lang="en">Beef Noodle Set</span><span lang="zh">牛肉麵套餐</span></h3>
+          <p class="dish-desc"><span lang="en">Beef Noodle Soup · 2 Side Dishes</span><span lang="zh">牛肉麵 · 小菜 ×2</span></p>
+          <p class="dish-price">$15</p>
+        </div>
+      </div>
+
+      <div class="dish-card">
+        <div class="dish-img"><img src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=640&q=80&fit=crop" alt="Fried Chicken"></div>
+        <div class="dish-info">
+          <p class="dish-tag"><span lang="en">STREET FOOD</span><span lang="zh">街頭風味</span></p>
+          <h3 class="dish-name"><span lang="en">Fried Chicken with Thai Basil</span><span lang="zh">九層塔炸雞</span></h3>
+          <p class="dish-desc"><span lang="en">Crispy fried chicken with fresh Thai basil — a night market classic.</span><span lang="zh">香酥炸雞配新鮮九層塔，夜市必吃滋味。</span></p>
+          <p class="dish-price">$8</p>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
 
-<!-- ═══════ FULL MENU ═══════ -->
-<section id="menu" class="py-24 md:py-36 px-6 md:px-12 bg-white">
-  <div class="max-w-7xl mx-auto">
+<!-- ═══ MENU BAND ═══ -->
 
-    <div class="text-center mb-14 fade-in">
-      <p class="sec-label mb-5"><span lang="en">FULL MENU</span><span lang="zh">完整菜單</span></p>
-      <div class="jp-rule mx-auto mb-8"></div>
-      <h2 class="text-meat font-bold mb-3" style="font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.03em;">
-        <span lang="en">Our Menu</span><span lang="zh">菜單</span>
+
+<!-- ═══ FULL MENU ═══ -->
+<section id="full-menu" class="section">
+  <div class="inner">
+    <div class="reveal" style="margin-bottom:52px;">
+      <p class="eyebrow"><span lang="en">FULL MENU</span><span lang="zh">完整菜單</span></p>
+      <h2 class="section-title">
+        <span lang="en">Our <em>Menu</em></span>
+        <span lang="zh">我們的<em>菜單</em></span>
       </h2>
-      <p class="text-meat/45 text-sm">
+      <p style="margin-top:14px;font-size:.8rem;color:var(--ash);">
         <span lang="en">Made fresh daily, prepared with care.</span>
         <span lang="zh">每天新鮮現做，用心準備每一道菜。</span>
       </p>
     </div>
 
-    <!-- Tabs -->
-    <div class="flex flex-wrap justify-center gap-6 md:gap-8 mb-10 border-b border-meat/10 fade-in">
-      <button class="tab-btn active pb-4 text-meat text-xs font-medium" style="letter-spacing:.12em;" data-tab="t-sets">
-        <span lang="en">SETS</span><span lang="zh">套餐</span>
-      </button>
-      <button class="tab-btn pb-4 text-meat text-xs font-medium" style="letter-spacing:.12em;" data-tab="t-alacarte">
-        <span lang="en">À LA CARTE</span><span lang="zh">單點</span>
-      </button>
-      <button class="tab-btn pb-4 text-meat text-xs font-medium" style="letter-spacing:.12em;" data-tab="t-soups">
-        <span lang="en">SOUPS</span><span lang="zh">湯品</span>
-      </button>
-      <button class="tab-btn pb-4 text-meat text-xs font-medium" style="letter-spacing:.12em;" data-tab="t-sides">
-        <span lang="en">SIDES</span><span lang="zh">小菜</span>
-      </button>
-      <button class="tab-btn pb-4 text-meat text-xs font-medium" style="letter-spacing:.12em;" data-tab="t-drinks">
-        <span lang="en">DRINKS</span><span lang="zh">飲料</span>
-      </button>
+    <div class="m-tabs reveal">
+      <button class="m-tab active" data-panel="p-sets"><span lang="en">SETS</span><span lang="zh">套餐</span></button>
+      <button class="m-tab" data-panel="p-alacarte"><span lang="en">À LA CARTE</span><span lang="zh">單點</span></button>
+      <button class="m-tab" data-panel="p-soups"><span lang="en">SOUPS</span><span lang="zh">湯品</span></button>
+      <button class="m-tab" data-panel="p-sides"><span lang="en">SIDES</span><span lang="zh">小菜</span></button>
+      <button class="m-tab" data-panel="p-drinks"><span lang="en">DRINKS</span><span lang="zh">飲料</span></button>
     </div>
 
-    <div id="tab-area">
-
-      <!-- ── SETS ── -->
-      <div id="t-sets" class="tab-panel">
-        <div class="grid md:grid-cols-2 gap-0">
-
-          <!-- Set 1 -->
-          <div class="menu-row py-5 px-2 border-b border-meat/[0.07]">
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="text-meat font-semibold text-sm pr-4">
-                <span lang="en">Signature Braised Pork Rice Set</span>
-                <span lang="zh">招牌滷肉飯套餐</span>
-              </h4>
-              <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$15</span>
-            </div>
-            <p class="text-meat/45 text-xs leading-relaxed">
-              <span lang="en">Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-              <span lang="zh">滷肉飯（大）・湯（小）・小菜 ×2・飲料</span>
-            </p>
-          </div>
-
-          <!-- Set 2 -->
-          <div class="menu-row py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="text-meat font-semibold text-sm pr-4">
-                <span lang="en">Steamed Egg Braised Pork Rice Set</span>
-                <span lang="zh">蒸蛋滷肉飯套餐</span>
-                <span class="text-eggyork text-xs ml-2 font-normal">★</span>
-              </h4>
-              <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$17</span>
-            </div>
-            <p class="text-meat/45 text-xs leading-relaxed">
-              <span lang="en">Steamed Water Egg · Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-              <span lang="zh">水蒸蛋・滷肉飯（大）・湯（小）・小菜 ×2・飲料</span>
-            </p>
-          </div>
-
-          <!-- Set 3 -->
-          <div class="menu-row py-5 px-2 border-b border-meat/[0.07]">
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="text-meat font-semibold text-sm pr-4">
-                <span lang="en">Pork Belly / Shredded Chicken Rice Set</span>
-                <span lang="zh">爌肉飯／雞肉絲飯套餐</span>
-              </h4>
-              <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$15</span>
-            </div>
-            <p class="text-meat/45 text-xs leading-relaxed">
-              <span lang="en">Braised Pork Belly or Shredded Chicken Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span>
-              <span lang="zh">爌肉飯或雞肉絲飯（大）・湯（小）・小菜 ×2・飲料</span>
-            </p>
-          </div>
-
-          <!-- Set 4 -->
-          <div class="menu-row py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="text-meat font-semibold text-sm pr-4">
-                <span lang="en">Beef Noodle Set</span>
-                <span lang="zh">牛肉麵套餐</span>
-              </h4>
-              <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$15</span>
-            </div>
-            <p class="text-meat/45 text-xs leading-relaxed">
-              <span lang="en">Beef Noodle Soup · 2 Side Dishes</span>
-              <span lang="zh">牛肉麵・小菜 ×2</span>
-            </p>
-          </div>
-
+    <!-- SETS -->
+    <div class="m-panel show" id="p-sets">
+      <div class="m-row">
+        <div class="m-row-left">
+          <p class="m-name"><span lang="en">Signature Braised Pork Rice Set</span><span lang="zh">招牌滷肉飯套餐</span></p>
+          <p class="m-desc"><span lang="en">Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span><span lang="zh">滷肉飯（大）· 湯（小）· 小菜 ×2 · 飲料</span></p>
         </div>
-
-        <!-- Upgrade note -->
-        <div class="mt-6 px-2 py-4 bg-eggyork/5 border-l-2 border-eggyork">
-          <p class="text-meat/70 text-xs leading-relaxed">
-            <span class="text-eggyork font-medium">
-              <span lang="en">SOUP UPGRADE</span><span lang="zh">湯品升級</span>
-            </span>
-            <span lang="en"> — Upgrade any set to Buddha Jumps Over the Wall for +$5</span>
-            <span lang="zh"> — 任何套餐可加 $5 升級至佛跳牆</span>
+        <p class="m-price">$15</p>
+      </div>
+      <div class="m-row">
+        <div class="m-row-left">
+          <p class="m-name">
+            <span lang="en">Steamed Egg Braised Pork Rice Set</span><span lang="zh">蒸蛋滷肉飯套餐</span>
+            <span class="m-badge">★</span>
           </p>
+          <p class="m-desc"><span lang="en">Steamed Water Egg · Braised Pork Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span><span lang="zh">水蒸蛋 · 滷肉飯（大）· 湯（小）· 小菜 ×2 · 飲料</span></p>
         </div>
+        <p class="m-price">$17</p>
       </div>
-
-      <!-- ── À LA CARTE ── -->
-      <div id="t-alacarte" class="tab-panel hidden grid md:grid-cols-2">
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Braised Pork Rice (Large)</span>
-              <span lang="zh">滷肉飯（大）</span>
-            </h4>
-            <p class="text-meat/45 text-xs">
-              <span lang="en">Also available: Braised Pork Belly</span>
-              <span lang="zh">亦有爌肉飯可選</span>
-            </p>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$8</span>
+      <div class="m-row">
+        <div class="m-row-left">
+          <p class="m-name"><span lang="en">Pork Belly / Shredded Chicken Rice Set</span><span lang="zh">爌肉飯／雞肉絲飯套餐</span></p>
+          <p class="m-desc"><span lang="en">Braised Pork Belly or Shredded Chicken Rice (Lg) · Soup (Sm) · 2 Side Dishes · Drink</span><span lang="zh">爌肉飯或雞肉絲飯（大）· 湯（小）· 小菜 ×2 · 飲料</span></p>
         </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Braised Pork Rice (Small)</span>
-              <span lang="zh">滷肉飯（小）</span>
-            </h4>
-            <p class="text-meat/45 text-xs">
-              <span lang="en">Also available: Braised Pork Belly</span>
-              <span lang="zh">亦有爌肉飯可選</span>
-            </p>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$6</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Shredded Chicken Rice (Large)</span>
-              <span lang="zh">雞肉絲飯（大）</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$8</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Shredded Chicken Rice (Small)</span>
-              <span lang="zh">雞肉絲飯（小）</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$6</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Lard Tossed Rice (Small)</span>
-              <span lang="zh">豬油拌飯（小）</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$5</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Steamed Water Egg</span>
-              <span lang="zh">水蒸蛋</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <div class="pr-6">
-            <h4 class="text-meat font-medium text-sm mb-1">
-              <span lang="en">Fried Chicken with Thai Basil</span>
-              <span lang="zh">九層塔炸雞</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$8</span>
-        </div>
-
+        <p class="m-price">$15</p>
       </div>
-
-      <!-- ── SOUPS ── -->
-      <div id="t-soups" class="tab-panel hidden">
-
-        <!-- Soups of the Day header -->
-        <div class="mb-1 px-2 pt-2 pb-3 border-b border-meat/[0.12]">
-          <p class="text-eggyork text-xs font-medium" style="letter-spacing:.18em;">
-            <span lang="en">SOUPS OF THE DAY (LARGE)  ·  $5</span>
-            <span lang="zh">今日湯品（大）·  $5</span>
-          </p>
+      <div class="m-row">
+        <div class="m-row-left">
+          <p class="m-name"><span lang="en">Beef Noodle Set</span><span lang="zh">牛肉麵套餐</span></p>
+          <p class="m-desc"><span lang="en">Beef Noodle Soup · 2 Side Dishes</span><span lang="zh">牛肉麵 · 小菜 ×2</span></p>
         </div>
-
-        <div class="grid md:grid-cols-2 gap-0 mb-8">
-
-          <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-            <div class="pr-6">
-              <h4 class="text-meat font-medium text-sm mb-1">
-                <span lang="en">Vegetable Pork Rib Soup</span>
-                <span lang="zh">蔬菜排骨湯</span>
-              </h4>
-              <p class="text-meat/45 text-xs">
-                <span lang="en">Choice of: White Radish · Zucchini · Green Papaya · Yam</span>
-                <span lang="zh">白蘿蔔 / 節瓜 / 青木瓜 / 山藥（可選）</span>
-              </p>
-            </div>
-            <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$5</span>
-          </div>
-
-          <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-            <div class="pr-6">
-              <h4 class="text-meat font-medium text-sm mb-1">
-                <span lang="en">Taiwanese Hot &amp; Sour Soup</span>
-                <span lang="zh">台式酸辣湯</span>
-              </h4>
-            </div>
-            <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$5</span>
-          </div>
-
-          <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-            <div class="pr-6">
-              <h4 class="text-meat font-medium text-sm mb-1">
-                <span lang="en">Peeled Chili Chicken Soup</span>
-                <span lang="zh">剝皮辣椒雞湯</span>
-              </h4>
-            </div>
-            <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$5</span>
-          </div>
-
-          <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-            <div class="pr-6">
-              <h4 class="text-meat font-medium text-sm mb-1">
-                <span lang="en">Steamed Egg &amp; Clear Chicken Soup</span>
-                <span lang="zh">蒸蛋清雞湯</span>
-              </h4>
-            </div>
-            <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$5</span>
-          </div>
-
-        </div>
-
-        <!-- Premium Soup header -->
-        <div class="mb-1 px-2 pt-2 pb-3 border-b border-meat/[0.12]">
-          <p class="text-eggyork text-xs font-medium" style="letter-spacing:.18em;">
-            <span lang="en">PREMIUM SOUP (LARGE)  ·  $8</span>
-            <span lang="zh">頂級湯品（大）·  $8</span>
-          </p>
-        </div>
-
-        <div class="grid md:grid-cols-2">
-          <div class="menu-row py-5 px-2 border-b border-meat/[0.07]">
-            <div class="flex justify-between items-start mb-1">
-              <h4 class="text-meat font-medium text-sm pr-4">
-                <span lang="en">Buddha Jumps Over the Wall</span>
-                <span lang="zh">佛跳牆</span>
-              </h4>
-              <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$8</span>
-            </div>
-            <p class="text-meat/45 text-xs">
-              <span lang="en">Upgrade any set combo to this premium soup for +$5</span>
-              <span lang="zh">任何套餐加 $5 即可升級至此湯</span>
-            </p>
-          </div>
-        </div>
-
+        <p class="m-price">$15</p>
       </div>
-
-      <!-- ── SIDES ── -->
-      <div id="t-sides" class="tab-panel hidden grid md:grid-cols-2">
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Smashed Cucumber Salad</span>
-            <span lang="zh">涼拌黃瓜</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Five-Spice Dried Tofu Salad</span>
-            <span lang="zh">涼拌五香豆干</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Marinated Peanuts</span>
-            <span lang="zh">涼拌花生</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Taiwanese Pickled Cabbage</span>
-            <span lang="zh">台式泡菜</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Century Egg Tofu</span>
-            <span lang="zh">皮蛋豆腐</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$3</span>
-        </div>
-
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <div class="pr-4">
-            <h4 class="text-meat font-medium text-sm">
-              <span lang="en">Braised Bamboo Shoots &amp; Braised Tofu</span>
-              <span lang="zh">滷筍絲・油豆腐</span>
-            </h4>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
+      <div class="upgrade-bar">
+        <strong><span lang="en">SOUP UPGRADE</span><span lang="zh">湯品升級</span></strong>
+        <span lang="en"> — Upgrade any set to Buddha Jumps Over the Wall for +$5</span>
+        <span lang="zh"> — 任何套餐可加 $5 升級至佛跳牆</span>
       </div>
+    </div>
 
-      <!-- ── DRINKS ── -->
-      <div id="t-drinks" class="tab-panel hidden grid md:grid-cols-2">
+    <!-- À LA CARTE -->
+    <div class="m-panel" id="p-alacarte">
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Braised Pork Rice (Large)</span><span lang="zh">滷肉飯（大）</span></p><p class="m-desc"><span lang="en">Also available: Braised Pork Belly</span><span lang="zh">亦有爌肉飯可選</span></p></div><p class="m-price">$8</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Braised Pork Rice (Small)</span><span lang="zh">滷肉飯（小）</span></p><p class="m-desc"><span lang="en">Also available: Braised Pork Belly</span><span lang="zh">亦有爌肉飯可選</span></p></div><p class="m-price">$6</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Shredded Chicken Rice (Large)</span><span lang="zh">雞肉絲飯（大）</span></p></div><p class="m-price">$8</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Shredded Chicken Rice (Small)</span><span lang="zh">雞肉絲飯（小）</span></p></div><p class="m-price">$6</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Lard Tossed Rice (Small)</span><span lang="zh">豬油拌飯（小）</span></p></div><p class="m-price">$5</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Steamed Water Egg</span><span lang="zh">水蒸蛋</span></p></div><p class="m-price">$3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Fried Chicken with Thai Basil</span><span lang="zh">九層塔炸雞</span></p></div><p class="m-price">$8</p></div>
+    </div>
 
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Iced Black Tea</span>
-            <span lang="zh">冰紅茶</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
+    <!-- SOUPS -->
+    <div class="m-panel" id="p-soups">
+      <p class="m-section-head"><span lang="en">SOUPS OF THE DAY (LARGE) · $5</span><span lang="zh">今日湯品（大）· $5</span></p>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Vegetable Pork Rib Soup</span><span lang="zh">蔬菜排骨湯</span></p><p class="m-desc"><span lang="en">Choice of: White Radish · Zucchini · Green Papaya · Yam</span><span lang="zh">白蘿蔔 / 節瓜 / 青木瓜 / 山藥（可選）</span></p></div><p class="m-price">$5</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Taiwanese Hot &amp; Sour Soup</span><span lang="zh">台式酸辣湯</span></p></div><p class="m-price">$5</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Peeled Chili Chicken Soup</span><span lang="zh">剝皮辣椒雞湯</span></p></div><p class="m-price">$5</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Steamed Egg &amp; Clear Chicken Soup</span><span lang="zh">蒸蛋清雞湯</span></p></div><p class="m-price">$5</p></div>
+      <p class="m-section-head" style="margin-top:16px;"><span lang="en">PREMIUM SOUP (LARGE) · $8</span><span lang="zh">頂級湯品（大）· $8</span></p>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Buddha Jumps Over the Wall</span><span lang="zh">佛跳牆</span></p><p class="m-desc"><span lang="en">Upgrade any set combo to this premium soup for +$5</span><span lang="zh">任何套餐加 $5 即可升級至此湯</span></p></div><p class="m-price">$8</p></div>
+    </div>
 
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <h4 class="text-meat font-medium text-sm pr-4">
-            <span lang="en">Winter Melon Tea</span>
-            <span lang="zh">冬瓜茶</span>
-          </h4>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
+    <!-- SIDES -->
+    <div class="m-panel" id="p-sides">
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Smashed Cucumber Salad</span><span lang="zh">涼拌黃瓜</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Five-Spice Dried Tofu Salad</span><span lang="zh">涼拌五香豆干</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Marinated Peanuts</span><span lang="zh">涼拌花生</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Taiwanese Pickled Cabbage</span><span lang="zh">台式泡菜</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Century Egg Tofu</span><span lang="zh">皮蛋豆腐</span></p></div><p class="m-price">$3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Braised Bamboo Shoots &amp; Braised Tofu</span><span lang="zh">滷筍絲 · 油豆腐</span></p></div><p class="m-price">$2–3</p></div>
+    </div>
 
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07]">
-          <div class="pr-4">
-            <h4 class="text-meat font-medium text-sm">
-              <span lang="en">Apple Cidra (Apple Soda)</span>
-              <span lang="zh">蘋果西打</span>
-            </h4>
-            <p class="text-meat/40 text-xs">
-              <span lang="en">Taiwanese soft drink classic</span>
-              <span lang="zh">台灣汽水</span>
-            </p>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
+    <!-- DRINKS -->
+    <div class="m-panel" id="p-drinks">
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Iced Black Tea</span><span lang="zh">冰紅茶</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Winter Melon Tea</span><span lang="zh">冬瓜茶</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Apple Cidra (Apple Soda)</span><span lang="zh">蘋果西打</span></p><p class="m-desc"><span lang="en">Taiwanese soft drink classic</span><span lang="zh">台灣汽水</span></p></div><p class="m-price">$2–3</p></div>
+      <div class="m-row"><div class="m-row-left"><p class="m-name"><span lang="en">Black Pine Sarsaparilla</span><span lang="zh">黑松沙士</span></p><p class="m-desc"><span lang="en">Taiwan's iconic soda since 1950</span><span lang="zh">台灣經典汽水</span></p></div><p class="m-price">$2–3</p></div>
+    </div>
 
-        <div class="menu-row flex justify-between items-start py-5 px-2 border-b border-meat/[0.07] md:pl-8">
-          <div class="pr-4">
-            <h4 class="text-meat font-medium text-sm">
-              <span lang="en">Black Pine Sarsaparilla</span>
-              <span lang="zh">黑松沙士</span>
-            </h4>
-            <p class="text-meat/40 text-xs">
-              <span lang="en">Taiwan's iconic soda since 1950</span>
-              <span lang="zh">台灣經典汽水</span>
-            </p>
-          </div>
-          <span class="text-meat/70 font-light text-sm whitespace-nowrap price-range">$2–3</span>
-        </div>
-
-      </div>
-
-    </div><!-- /tab-area -->
   </div>
 </section>
 
 
+<!-- ═══ LOCATION ═══ -->
+<section id="location" class="section" style="background:var(--white);">
+  <div class="inner">
+    <div class="loc-grid">
 
-
-<!-- ═══════ LOCATION ═══════ -->
-<section id="location" class="py-24 md:py-36 px-6 md:px-12 bg-cream">
-  <div class="max-w-7xl mx-auto">
-    <div class="grid md:grid-cols-2 gap-16 md:gap-20 items-start">
-
-      <div class="fade-in">
-        <p class="sec-label mb-5"><span lang="en">FIND US</span><span lang="zh">找到我們</span></p>
-        <div class="jp-rule mb-8"></div>
-        <h2 class="text-meat font-bold mb-12" style="font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.03em;">
-          <span lang="en">Location &amp; Hours</span>
-          <span lang="zh">位置 &amp; 營業時間</span>
+      <div class="reveal">
+        <p class="eyebrow"><span lang="en">FIND US</span><span lang="zh">找到我們</span></p>
+        <h2 class="section-title">
+          <span lang="en">Location<br>&amp; <em>Hours</em></span>
+          <span lang="zh">位置<br>&amp; <em>時間</em></span>
         </h2>
 
-        <div class="mb-9">
-          <p class="sec-label mb-3"><span lang="en">ADDRESS</span><span lang="zh">地址</span></p>
-          <p class="text-meat font-medium mb-1 text-sm">GUOZAMI <span lang="en">Taiwanese Cuisine</span><span lang="zh">台式料理</span></p>
-          <p lang="en" class="text-meat/60 text-sm leading-loose">
-            356 Kensington Rd NW<br>
-            Calgary, AB T2N 3R4<br>
-            Canada<br>
-            <span class="text-meat/40 text-xs">(Kensington Village)</span>
-          </p>
-          <p lang="zh" class="text-meat/60 text-sm leading-loose">
-            356 Kensington Rd NW<br>
-            Calgary, AB T2N 3R4<br>
-            加拿大<br>
-            <span class="text-meat/40 text-xs">（Kensington Village）</span>
-          </p>
-        </div>
-
-        <div class="mb-9">
-          <p class="sec-label mb-3"><span lang="en">CONTACT</span><span lang="zh">聯絡</span></p>
-          <p class="text-meat text-sm">+1 1234567890</p>
-          <p class="text-meat/60 text-sm">info@guozami.com</p>
-        </div>
-
-        <div>
-          <p class="sec-label mb-4"><span lang="en">OPENING HOURS</span><span lang="zh">營業時間</span></p>
-          <div class="space-y-0">
-            <div class="flex justify-between py-3 border-b border-meat/[0.07]">
-              <span class="text-meat text-sm"><span lang="en">Monday — Friday</span><span lang="zh">星期一 — 五</span></span>
-              <span class="text-meat/70 text-sm">11:30 — 22:00</span>
+        <div style="margin-top:40px;">
+          <div class="ct-row">
+            <div class="ct-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--eggyork)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
-            <div class="flex justify-between py-3 border-b border-meat/[0.07]">
-              <span class="text-meat text-sm"><span lang="en">Saturday — Sunday</span><span lang="zh">星期六 — 日</span></span>
-              <span class="text-meat/70 text-sm">10:30 — 22:30</span>
-            </div>
-            <div class="flex justify-between py-3 border-b border-meat/[0.07]">
-              <span class="text-meat text-sm"><span lang="en">Public Holidays</span><span lang="zh">公眾假期</span></span>
-              <span class="text-meat/70 text-sm">11:00 — 22:00</span>
-            </div>
-            <div class="flex justify-between py-3">
-              <span class="text-meat text-sm"><span lang="en">Last Order</span><span lang="zh">最後點餐</span></span>
-              <span class="text-eggyork text-sm font-medium">
-                <span lang="en">30 min before closing</span>
-                <span lang="zh">關店前 30 分鐘</span>
-              </span>
+            <div>
+              <p class="ct-val" style="color:var(--meat);font-weight:500;">356 Kensington Rd NW</p>
+              <p class="ct-val"><span lang="en">Calgary, AB T2N 3R4, Canada</span><span lang="zh">Calgary, AB T2N 3R4, 加拿大</span></p>
             </div>
           </div>
+          <div class="ct-row">
+            <div class="ct-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--eggyork)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <p class="ct-val">+1 1234567890</p>
+          </div>
+          <div class="ct-row">
+            <div class="ct-icon">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--eggyork)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <p class="ct-val">info@guozami.com</p>
+          </div>
+        </div>
+
+        <div style="margin-top:36px;">
+          <p style="font-size:.52rem;letter-spacing:.3em;font-weight:500;color:var(--eggyork);margin-bottom:6px;">
+            <span lang="en">OPENING HOURS</span><span lang="zh">營業時間</span>
+          </p>
+          <div class="hrs-row"><span class="hrs-day"><span lang="en">Monday — Friday</span><span lang="zh">星期一 — 五</span></span><span class="hrs-time">11:30 — 22:00</span></div>
+          <div class="hrs-row"><span class="hrs-day"><span lang="en">Saturday — Sunday</span><span lang="zh">星期六 — 日</span></span><span class="hrs-time">10:30 — 22:30</span></div>
+          <div class="hrs-row"><span class="hrs-day"><span lang="en">Public Holidays</span><span lang="zh">公眾假期</span></span><span class="hrs-time">11:00 — 22:00</span></div>
+          <div class="hrs-row"><span class="hrs-day"><span lang="en">Last Order</span><span lang="zh">最後點餐</span></span><span class="hrs-time hi"><span lang="en">30 min before closing</span><span lang="zh">關店前 30 分鐘</span></span></div>
         </div>
       </div>
 
-      <!-- Map placeholder -->
-      <div class="fade-in">
-        <div class="relative w-full bg-white overflow-hidden" style="height:460px;">
-          <div class="absolute inset-0 flex flex-col items-center justify-center bg-cream/80 gap-4 z-10 pointer-events-none">
-            <div class="w-12 h-12 bg-eggyork flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
+      <div class="reveal d1">
+        <div class="map-wrap">
+          <svg class="map-grid" xmlns="http://www.w3.org/2000/svg">
+            <defs><pattern id="mg" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="var(--meat)" stroke-width=".5"/></pattern></defs>
+            <rect width="100%" height="100%" fill="url(#mg)"/>
+            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="var(--meat)" stroke-width="1.5" opacity=".25"/>
+            <line x1="60%" y1="0" x2="60%" y2="100%" stroke="var(--meat)" stroke-width="1.5" opacity=".25"/>
+          </svg>
+          <div class="map-ph">
+            <div class="map-pin-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
-            <p class="text-meat font-medium text-sm" style="letter-spacing:.08em;">GUOZAMI</p>
-            <p class="text-meat/50 text-xs text-center px-8">
-              <span lang="en">356 Kensington Rd NW, Calgary</span>
-              <span lang="zh">356 Kensington Rd NW, Calgary</span><br>
-              <span class="text-eggyork/70 text-xs" style="letter-spacing:.08em;">
-                <span lang="en">REPLACE WITH GOOGLE MAPS EMBED</span>
-                <span lang="zh">請替換為 Google Maps 嵌入</span>
-              </span>
+            <p style="font-size:.7rem;font-weight:600;letter-spacing:.1em;color:var(--meat);">GUOZAMI</p>
+            <p style="font-size:.62rem;color:var(--ash);text-align:center;line-height:1.6;">356 Kensington Rd NW<br>Calgary, AB</p>
+            <p style="font-size:.48rem;letter-spacing:.14em;color:rgba(212,64,47,.5);margin-top:6px;">
+              <span lang="en">REPLACE WITH GOOGLE MAPS EMBED</span>
+              <span lang="zh">請替換為 Google Maps</span>
             </p>
           </div>
-          <svg class="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-            <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#512508" stroke-width="0.5"/></pattern></defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
-            <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#512508" stroke-width="1.5" opacity="0.4"/>
-            <line x1="30%" y1="0" x2="30%" y2="100%" stroke="#512508" stroke-width="1" opacity="0.3"/>
-            <line x1="70%" y1="0" x2="70%" y2="100%" stroke="#512508" stroke-width="2.5" opacity="0.4"/>
-            <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#512508" stroke-width="0.8" opacity="0.2"/>
-            <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#512508" stroke-width="0.8" opacity="0.2"/>
-          </svg>
         </div>
       </div>
 
@@ -1014,220 +799,134 @@
 </section>
 
 
-<!-- ═══════ DELIVERY ═══════ -->
-<section id="delivery" class="py-24 md:py-36 px-6 md:px-12 bg-white">
-  <div class="max-w-7xl mx-auto">
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="ft-top">
 
-    <div class="text-center mb-16 fade-in">
-      <p class="sec-label mb-5"><span lang="en">ORDER ONLINE</span><span lang="zh">線上訂購</span></p>
-      <div class="jp-rule mx-auto mb-8"></div>
-      <h2 class="text-meat font-bold mb-4" style="font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:.03em;">
-        <span lang="en">Delivery</span><span lang="zh">外賣訂購</span>
-      </h2>
-      <p class="text-meat/45 text-sm max-w-xs mx-auto leading-relaxed">
-        <span lang="en">Enjoy authentic Taiwanese food at home. Choose your preferred delivery platform.</span>
-        <span lang="zh">在家也能享用道地台灣味，選擇你最方便的外賣平台。</span>
+    <div>
+      <div class="ft-brand">
+        <img src="image/Guozami Icon_Full color.webp" alt="GUOZAMI">
+        <div>
+          <p class="ft-brand-name">GUOZAMI</p>
+          <p class="ft-brand-sub"><span lang="en">TAIWANESE CUISINE</span><span lang="zh">台式料理</span></p>
+        </div>
+      </div>
+      <p class="ft-body">
+        <span lang="en">Authentic Taiwanese food, bringing the warmth of home to your table every day. Calgary's destination for braised pork rice, beef noodle soup, and Taiwanese comfort cooking.</span>
+        <span lang="zh">正宗台式料理，帶給你每一天的家鄉溫暖。卡加利道地滷肉飯、牛肉麵與台灣家常菜。</span>
       </p>
+      <div class="social-row">
+        <a href="#" class="social-btn" aria-label="Instagram">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="rgba(255,255,255,.45)" stroke="none"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="Facebook">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,.45)"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" class="social-btn" aria-label="WhatsApp">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </a>
+      </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-2xl mx-auto fade-in">
-
-      <a href="#" class="delivery-app bg-cream flex flex-col items-center py-10 px-6 group">
-        <div class="w-14 h-14 rounded-full mb-5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="background-color:#D70F64;">
-          <svg viewBox="0 0 36 36" width="28" height="28" fill="none"><circle cx="18" cy="18" r="16" fill="rgba(255,255,255,0.15)"/><text x="18" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="white" font-family="Inter,sans-serif">fp</text></svg>
-        </div>
-        <p class="text-meat font-semibold text-sm mb-1" style="letter-spacing:.05em;">Foodpanda</p>
-        <p class="text-eggyork text-xs" style="letter-spacing:.1em;"><span lang="en">Order Now →</span><span lang="zh">立即訂購 →</span></p>
-      </a>
-
-      <a href="#" class="delivery-app bg-cream flex flex-col items-center py-10 px-6 group">
-        <div class="w-14 h-14 rounded-full mb-5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="background-color:#06C167;">
-          <svg viewBox="0 0 36 36" width="28" height="28" fill="none"><circle cx="18" cy="18" r="16" fill="rgba(255,255,255,0.15)"/><text x="18" y="23" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="Inter,sans-serif">UE</text></svg>
-        </div>
-        <p class="text-meat font-semibold text-sm mb-1" style="letter-spacing:.05em;">Uber Eats</p>
-        <p class="text-eggyork text-xs" style="letter-spacing:.1em;"><span lang="en">Order Now →</span><span lang="zh">立即訂購 →</span></p>
-      </a>
-
-      <a href="#" class="delivery-app bg-cream flex flex-col items-center py-10 px-6 group">
-        <div class="w-14 h-14 rounded-full mb-5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300" style="background-color:#00CCBC;">
-          <svg viewBox="0 0 36 36" width="28" height="28" fill="none"><circle cx="18" cy="18" r="16" fill="rgba(255,255,255,0.15)"/><text x="18" y="23" text-anchor="middle" font-size="10" font-weight="700" fill="white" font-family="Inter,sans-serif">RO</text></svg>
-        </div>
-        <p class="text-meat font-semibold text-sm mb-1" style="letter-spacing:.05em;">Deliveroo</p>
-        <p class="text-eggyork text-xs" style="letter-spacing:.1em;"><span lang="en">Order Now →</span><span lang="zh">立即訂購 →</span></p>
-      </a>
-
+    <div>
+      <p class="ft-col-title"><span lang="en">NAVIGATE</span><span lang="zh">導航</span></p>
+      <a href="#story"     class="ft-link"><span lang="en">Our Story</span><span lang="zh">我們的故事</span></a>
+      <a href="#signature" class="ft-link"><span lang="en">Signature Dishes</span><span lang="zh">招牌菜</span></a>
+      <a href="#full-menu" class="ft-link"><span lang="en">Full Menu</span><span lang="zh">完整菜單</span></a>
+      <a href="#location"  class="ft-link"><span lang="en">Location &amp; Hours</span><span lang="zh">位置 &amp; 時間</span></a>
     </div>
 
-    <p class="text-center text-meat/35 text-xs mt-8 fade-in" style="letter-spacing:.1em;">
-      <span lang="en">Delivery available daily 11:30 — 21:30</span>
-      <span lang="zh">外賣服務時間：每日 11:30 — 21:30</span>
-    </p>
+    <div>
+      <p class="ft-col-title"><span lang="en">CONTACT</span><span lang="zh">聯絡</span></p>
+      <p class="ft-contact">+1 1234567890</p>
+      <p class="ft-contact">info@guozami.com</p>
+      <p class="ft-contact" style="margin-top:14px;line-height:1.7;">356 Kensington Rd NW<br>Calgary, AB T2N 3R4</p>
+      <p class="ft-col-title" style="margin-top:28px;"><span lang="en">DELIVERY</span><span lang="zh">外賣</span></p>
+      <a href="#" class="ft-link">Foodpanda</a>
+      <a href="#" class="ft-link">Uber Eats</a>
+      <a href="#" class="ft-link">Deliveroo</a>
+    </div>
 
   </div>
-</section>
 
-
-<!-- ═══════ FOOTER ═══════ -->
-<footer style="background-color:var(--meat);" class="py-16 px-6 md:px-12">
-  <div class="max-w-7xl mx-auto">
-
-    <div class="grid md:grid-cols-3 gap-12 pb-12 mb-8 border-b" style="border-color:rgba(255,255,255,.08);">
-
-      <div>
-        <p class="text-white font-bold mb-2" style="font-size:1.05rem;letter-spacing:.18em;">GUOZAMI</p>
-        <p class="text-white/30 text-xs mb-6" style="letter-spacing:.22em;">
-          <span lang="en">TAIWANESE CUISINE</span><span lang="zh">台式料理</span>
-        </p>
-        <p class="text-white/45 text-sm leading-relaxed">
-          <span lang="en">Authentic Taiwanese food, bringing the warmth of home to your table every day.</span>
-          <span lang="zh">正宗台式料理，帶給你每一天的家鄉溫暖。</span>
-        </p>
-      </div>
-
-      <div>
-        <p class="text-white/30 text-xs font-medium mb-6" style="letter-spacing:.28em;">
-          <span lang="en">NAVIGATE</span><span lang="zh">導航</span>
-        </p>
-        <div class="flex flex-col gap-3">
-          <a href="#menu"        class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Menu</span><span lang="zh">菜單</span></a>
-          <a href="#signature"   class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Signature Dishes</span><span lang="zh">招牌菜</span></a>
-          <a href="#location"    class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Location</span><span lang="zh">位置</span></a>
-          <a href="#delivery"    class="text-white/50 text-sm hover:text-eggyork transition-colors duration-300"><span lang="en">Order Delivery</span><span lang="zh">外賣訂購</span></a>
-        </div>
-      </div>
-
-      <div>
-        <p class="text-white/30 text-xs font-medium mb-6" style="letter-spacing:.28em;">
-          <span lang="en">CONNECT</span><span lang="zh">聯絡我們</span>
-        </p>
-        <p class="text-white/50 text-sm mb-1">+1 1234567890</p>
-        <p class="text-white/50 text-sm mb-8">info@guozami.com</p>
-
-        <p class="text-white/30 text-xs font-medium mb-4" style="letter-spacing:.28em;">
-          <span lang="en">FOLLOW US</span><span lang="zh">追蹤我們</span>
-        </p>
-        <div class="flex gap-3">
-          <a href="#" aria-label="Instagram" class="w-9 h-9 flex items-center justify-center border transition-all duration-300 hover:bg-eggyork hover:border-eggyork" style="border-color:rgba(255,255,255,.18);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
-          </a>
-          <a href="#" aria-label="Facebook" class="w-9 h-9 flex items-center justify-center border transition-all duration-300 hover:bg-eggyork hover:border-eggyork" style="border-color:rgba(255,255,255,.18);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-          </a>
-          <a href="#" aria-label="WhatsApp" class="w-9 h-9 flex items-center justify-center border transition-all duration-300 hover:bg-eggyork hover:border-eggyork" style="border-color:rgba(255,255,255,.18);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          </a>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
-      <p class="text-white/25 text-xs" style="letter-spacing:.1em;">© 2024 GUOZAMI. All Rights Reserved.</p>
-      <p class="text-white/15 text-xs" style="letter-spacing:.1em;">
-        <span lang="en">Taiwanese Flavour · Everyday Warmth</span>
-        <span lang="zh">台灣味 · 日常暖</span>
-      </p>
-    </div>
-
+  <div class="ft-bottom">
+    <p class="ft-copy">© 2024 GUOZAMI. All Rights Reserved.</p>
+    <p class="ft-copy"><span lang="en">Taiwanese Flavour · Everyday Warmth</span><span lang="zh">台灣味 · 日常暖</span></p>
   </div>
 </footer>
 
 
-<!-- ═══════ JAVASCRIPT ═══════ -->
+<!-- ═══ JAVASCRIPT ═══ -->
 <script>
 (function () {
   'use strict';
 
-  // ── Language switcher ─────────────────────────
+  /* Language */
   function setLang(lang) {
     const html = document.documentElement;
     html.className = 'lang-' + lang;
     html.lang = lang === 'zh' ? 'zh-TW' : 'en';
-    document.title = lang === 'zh'
-      ? 'GUOZAMI — 台灣味・日常暖'
-      : 'GUOZAMI — Taiwanese Flavour · Everyday Warmth';
-    document.querySelectorAll('.lang-opt').forEach(btn => {
-      const isActive = btn.dataset.lang === lang;
-      btn.classList.toggle('active-lang', isActive);
-      btn.style.fontWeight = isActive ? '700' : '400';
-      btn.style.color = isActive ? 'var(--meat)' : '';
-    });
-    try { localStorage.setItem('gz-lang', lang); } catch(e) {}
+    document.title = lang === 'zh' ? 'GUOZAMI — 台灣味・日常暖' : 'GUOZAMI — Taiwanese Flavour · Everyday Warmth';
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+    try { localStorage.setItem('gz-lang', lang); } catch(e){}
   }
+  document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  try { if (localStorage.getItem('gz-lang') === 'zh') setLang('zh'); } catch(e){}
 
-  document.querySelectorAll('.lang-opt').forEach(btn => {
-    btn.addEventListener('click', () => setLang(btn.dataset.lang));
-  });
+  /* Nav scroll */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60), { passive: true });
 
-  // Restore saved language
-  try {
-    const saved = localStorage.getItem('gz-lang');
-    if (saved === 'zh') setLang('zh');
-  } catch(e) {}
-
-  // ── Navbar scroll state ───────────────────────
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 70);
-  }, { passive: true });
-
-  // ── Mobile hamburger ──────────────────────────
-  const hamBtn      = document.getElementById('ham-btn');
-  const mobilePanel = document.getElementById('mobile-panel');
-  const bars        = hamBtn.querySelectorAll('.ham-bar');
-  let menuOpen      = false;
-
+  /* Hamburger */
+  const hamBtn  = document.getElementById('ham');
+  const mobNav  = document.getElementById('mob-nav');
+  const lines   = hamBtn.querySelectorAll('.ham-line');
+  let open = false;
   hamBtn.addEventListener('click', () => {
-    menuOpen = !menuOpen;
-    mobilePanel.classList.toggle('open', menuOpen);
-    bars[0].style.transform = menuOpen ? 'rotate(45deg) translate(4px, 4px)'  : '';
-    bars[1].style.opacity   = menuOpen ? '0' : '';
-    bars[2].style.transform = menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : '';
+    open = !open;
+    mobNav.classList.toggle('open', open);
+    lines[0].style.transform = open ? 'rotate(45deg) translate(4px, 4px)' : '';
+    lines[1].style.opacity   = open ? '0' : '';
+    lines[2].style.transform = open ? 'rotate(-45deg) translate(4px, -4px)' : '';
   });
-  mobilePanel.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      menuOpen = false;
-      mobilePanel.classList.remove('open');
-      bars[0].style.transform = bars[1].style.opacity = bars[2].style.transform = '';
-    });
-  });
+  mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    open = false; mobNav.classList.remove('open');
+    lines[0].style.transform = lines[1].style.opacity = lines[2].style.transform = '';
+  }));
 
-  // ── Smooth scroll ─────────────────────────────
+  /* Smooth scroll */
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
       if (id === '#') return;
-      const target = document.querySelector(id);
-      if (!target) return;
+      const el = document.querySelector(id);
+      if (!el) return;
       e.preventDefault();
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+      const nh = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - nh, behavior: 'smooth' });
     });
   });
 
-  // ── Fade-in on scroll ─────────────────────────
+  /* Reveal */
   const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.07, rootMargin: '0px 0px -44px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // ── Menu tabs ─────────────────────────────────
-  const tabBtns   = document.querySelectorAll('.tab-btn');
-  const tabPanels = document.querySelectorAll('.tab-panel');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      tabPanels.forEach(p => p.classList.add('hidden'));
-      const panel = document.getElementById(btn.dataset.tab);
-      if (panel) panel.classList.remove('hidden');
-    });
-  });
+  /* Menu tabs */
+  const mTabs   = document.querySelectorAll('.m-tab');
+  const mPanels = document.querySelectorAll('.m-panel');
+  mTabs.forEach(tab => tab.addEventListener('click', () => {
+    mTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    mPanels.forEach(p => p.classList.remove('show'));
+    const panel = document.getElementById(tab.dataset.panel);
+    if (panel) panel.classList.add('show');
+  }));
 
-  // ── Page load fade ────────────────────────────
+  /* Page fade-in */
   document.body.style.opacity = '0';
-  document.body.style.transition = 'opacity 0.5s ease';
+  document.body.style.transition = 'opacity .5s ease';
   window.addEventListener('load', () => { document.body.style.opacity = '1'; });
 
 })();
